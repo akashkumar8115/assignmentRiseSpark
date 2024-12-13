@@ -20,7 +20,7 @@ const Stepper = ({ currentStep, completedSteps = [], timeSpent }) => {
     };
 
     return (
-        <div className="bg-transparent p-6 pb-0 rounded-xl">
+        <div className="bg-transparent p-6 pb-0 pt-0 rounded-xl">
             {/* <div className="flex items-center justify-between mb-8">
                 <h2 className="text-xl font-semibold text-gray-800">Form Progress</h2>
                 <div className="flex items-center bg-blue-50 px-4 py-2 rounded-full">

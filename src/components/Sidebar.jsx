@@ -18,7 +18,7 @@ const Sidebar = () => {
     return (
         <>
             {/* Mobile Menu Button */}
-            <button 
+            <button
                 className="fixed top-4 left-4 z-50 md:hidden bg-white p-2 rounded-lg shadow-lg"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
@@ -30,16 +30,16 @@ const Sidebar = () => {
                 fixed md:static inset-y-0 left-0 z-40
                 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} 
                 md:translate-x-0 transition-transform duration-300 ease-in-out
-                w-64 bg-white shadow-xl md:shadow-md h-screen flex flex-col
+                w-64 bg-white h-screen flex flex-col
             `}>
-                <div className="p-6 flex items-center space-x-3">
+                <div className="p-6 flex items-center space-x-3 pl-16">
                     <FaGavel className="text-blue-500 text-2xl" />
                     <h1 className="text-xl font-bold bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
                         Jur
                     </h1>
                 </div>
 
-                <nav className="flex-1 px-4 space-y-2 overflow-y-auto">
+                <nav className="flex-1 px-4 space-y-2 overflow-y-auto pt-1">
                     {menuItems.map((item, index) => (
                         <button
                             key={index}
@@ -54,9 +54,9 @@ const Sidebar = () => {
                 </nav>
 
                 <div className="p-4 border-t">
-                    <img 
-                        src="https://media.istockphoto.com/id/451358505/vector/justice-is-expensive.jpg?s=612x612&w=is&k=20&c=uq05epYCmskD6gzmOia4mWXy5y0oJoMTG9G8FC1-ECw=" 
-                        alt="Justice" 
+                    <img
+                        src="https://media.istockphoto.com/id/451358505/vector/justice-is-expensive.jpg?s=612x612&w=is&k=20&c=uq05epYCmskD6gzmOia4mWXy5y0oJoMTG9G8FC1-ECw="
+                        alt="Justice"
                         className="w-full rounded-lg"
                     />
                 </div>

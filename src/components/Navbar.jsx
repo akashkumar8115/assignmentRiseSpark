@@ -4,7 +4,7 @@ import { FaGavel } from 'react-icons/fa';
 
 const Navbar = () => {
     return (
-        <div className="bg-white shadow-md h-16 flex items-center justify-between px-6">
+        <div className="bg-white h-16 flex items-center justify-between px-6">
             <div className="flex items-center space-x-2">
                 {/* <FaGavel className="text-blue-500 text-2xl" />
                 <h1 className="text-xl font-bold bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">Jur</h1> */}

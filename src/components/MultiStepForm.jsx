@@ -8,44 +8,54 @@ import ReviewForm from "./forms/ReviewForm";
 import PaymentForm from "./forms/PaymentForm";
 import Notification from "./Notification";
 import Stepper from "./Stepper";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { generatePDF } from '../utils/pdfGenerator';
 
 const MultiStepForm = () => {
-    // Add to state
-    const [completedSteps, setCompletedSteps] = useState([]);
-
-    const [currentStep, setCurrentStep] = useState(1);
-    const [formData, setFormData] = useState({
-        // Preliminary
+    const [formData, setFormData] = useLocalStorage("formData", {
         caseTitle: "",
         caseType: "",
-
-        // Personal Details
+        caseDescription: "",
         firstName: "",
         lastName: "",
         email: "",
         phone: "",
-
-        // KYC
+        address: "",
         idType: "",
         idNumber: "",
-
-        // Parties
+        idDocument: null,
+        proofOfAddress: null,
         claimantCompany: "",
         claimantRegNumber: "",
+        claimantAddress: "",
         respondentCompany: "",
         respondentRegNumber: "",
-
-        // Claim Details
+        respondentAddress: "",
         contractValue: "",
         claimAmount: "",
         claimDescription: "",
-
-        // Payment
+        supportingDocuments: [],
         paymentMethod: "",
         cardNumber: "",
         expiryDate: "",
-        cvv: ""
+        cvv: "",
+        billingAddress: ""
     });
+
+    const [currentStep, setCurrentStep] = useState(() => {
+        const savedStep = localStorage.getItem("currentStep");
+        return savedStep ? parseInt(savedStep) : 1;
+    });
+
+    const [completedSteps, setCompletedSteps] = useState(() => {
+        const savedSteps = localStorage.getItem("completedSteps");
+        return savedSteps ? JSON.parse(savedSteps) : [];
+    });
+
+    useEffect(() => {
+        localStorage.setItem("currentStep", currentStep);
+        localStorage.setItem("completedSteps", JSON.stringify(completedSteps));
+    }, [currentStep, completedSteps]);
 
     const [notification, setNotification] = useState({
         show: false,
@@ -53,47 +63,53 @@ const MultiStepForm = () => {
         type: ""
     });
 
+    const [errors, setErrors] = useState({});
+    const [timeSpent, setTimeSpent] = useState(0);
+    const [startTime] = useState(Date.now());
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            const currentTime = Date.now();
+            setTimeSpent(Math.floor((currentTime - startTime) / 60000));
+        }, 60000);
+
+        return () => clearInterval(timer);
+    }, [startTime]);
+
     const showNotification = (message, type = "success") => {
         setNotification({ show: true, message, type });
         setTimeout(() => setNotification({ show: false, message: "", type: "" }), 3000);
     };
 
-    const [errors, setErrors] = useState({});
-
     const validateStep = (step) => {
         let stepErrors = {};
 
         switch (step) {
-            case 1: // Preliminary
+            case 1:
                 if (!formData.caseTitle) stepErrors.caseTitle = "Case title is required";
                 if (!formData.caseType) stepErrors.caseType = "Case type is required";
                 break;
-
-            case 2: // Personal Details
+            case 2:
                 if (!formData.firstName) stepErrors.firstName = "First name is required";
                 if (!formData.lastName) stepErrors.lastName = "Last name is required";
                 if (!formData.email) stepErrors.email = "Email is required";
                 else if (!/\S+@\S+\.\S+/.test(formData.email)) stepErrors.email = "Invalid email format";
                 if (!formData.phone) stepErrors.phone = "Phone number is required";
                 break;
-
-            case 3: // KYC
+            case 3:
                 if (!formData.idType) stepErrors.idType = "ID type is required";
                 if (!formData.idNumber) stepErrors.idNumber = "ID number is required";
                 break;
-
-            case 4: // Parties
+            case 4:
                 if (!formData.claimantCompany) stepErrors.claimantCompany = "Claimant company is required";
                 if (!formData.respondentCompany) stepErrors.respondentCompany = "Respondent company is required";
                 break;
-
-            case 5: // Claim Details
+            case 5:
                 if (!formData.contractValue) stepErrors.contractValue = "Contract value is required";
                 if (!formData.claimAmount) stepErrors.claimAmount = "Claim amount is required";
                 if (!formData.claimDescription) stepErrors.claimDescription = "Claim description is required";
                 break;
-
-            case 7: // Payment
+            case 7:
                 if (!formData.paymentMethod) stepErrors.paymentMethod = "Payment method is required";
                 if (formData.paymentMethod === 'credit') {
                     if (!formData.cardNumber) stepErrors.cardNumber = "Card number is required";
@@ -101,7 +117,6 @@ const MultiStepForm = () => {
                     if (!formData.cvv) stepErrors.cvv = "CVV is required";
                 }
                 break;
-
             default:
                 break;
         }
@@ -111,7 +126,6 @@ const MultiStepForm = () => {
 
     const handleNext = () => {
         const stepErrors = validateStep(currentStep);
-
         if (Object.keys(stepErrors).length === 0) {
             setCompletedSteps([...completedSteps, currentStep]);
             if (currentStep === 7) {
@@ -132,10 +146,31 @@ const MultiStepForm = () => {
         setErrors({});
     };
 
-    const handleSubmit = () => {
-        // Here you would typically send the data to your backend
+    const handleSubmit = async() => {
         console.log("Form submitted:", formData);
         showNotification("Form submitted successfully!", "success");
+        try {
+            // Process payment and form submission
+            showNotification("Payment successful!", "success");
+            
+            // Generate and download slip
+            const slip = await generatePDF(formData);
+            const downloadUrl = URL.createObjectURL(slip);
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = `claim-receipt-${Date.now()}.pdf`;
+            link.click();
+            
+            // Clean up
+            URL.revokeObjectURL(downloadUrl);
+            
+            // Reset form or redirect
+            setFormData({});
+            setCurrentStep(1);
+            setCompletedSteps([]);
+        } catch (error) {
+            showNotification("Error processing payment", "error");
+        }
     };
 
     const renderForm = () => {
@@ -158,25 +193,7 @@ const MultiStepForm = () => {
                 return null;
         }
     };
-    // Add to state
-    const [timeSpent, setTimeSpent] = useState(0);
-    const [startTime] = useState(Date.now());
-    // Add useEffect for time tracking
-    useEffect(() => {
-        const timer = setInterval(() => {
-            const currentTime = Date.now();
-            const minutesSpent = Math.floor((currentTime - startTime) / 60000);
-            setTimeSpent(minutesSpent);
-        }, 60000);
 
-        return () => clearInterval(timer);
-    }, [startTime]);
-    // const showNotification = (message, type) => {
-    //     setNotification({ show: true, message, type });
-    //     setTimeout(() => {
-    //         setNotification({ show: false, message: "", type: "" });
-    //     }, 3000);
-    // };
     return (
         <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <Notification
@@ -185,25 +202,22 @@ const MultiStepForm = () => {
                 isVisible={notification.show}
                 onClose={() => setNotification({ show: false, message: "", type: "" })}
             />
-
             <div className="mb-8">
                 <Stepper currentStep={currentStep} completedSteps={completedSteps} timeSpent={timeSpent} />
             </div>
-
             <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
                 <div className="max-w-3xl mx-auto">
                     {renderForm()}
-
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
                         {currentStep > 1 && (
                             <button
                                 onClick={handlePrevious}
-                                className="w-full sm:w-auto px-6 py-3 bg-gray-100 text-gray-700 rounded-lg
-                                         hover:bg-gray-200 transition-colors duration-200
-                                         focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                                className="w-full sm:w-auto px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                             >
                                 Previous
                             </button>
+
+
                         )}
                         <button
                             onClick={handleNext}
