@@ -1,0 +1,81 @@
+@media (max-width: 768px) {
+    /* Styles for screens that are 768px or smaller */
+}
+
+
+
+@media (min-width: 300px) and (max-width: 1160px) {
+    .step_id {
+        font-size: 10px;
+    }
+
+    .step_lebel {
+        font-size: 10px;
+    }
+
+    .status_bar {
+        display: flex;
+    }
+
+    .current_step_line {
+        padding-left: 1rem;
+        padding-right: 1.5rem;
+    }
+
+}
+
+@media (min-width: 200px) and (max-width: 900px) {
+    .circle_status {
+        height: 1.2rem;
+        width: 1.2rem;
+    }
+
+    .current_step_line {
+        padding-left: 0.7rem;
+        padding-right: 1.5rem;
+        margin-top: -0.1rem;
+    }
+
+    .status_box {
+        overflow-x: scroll;
+        scrollbar-width: 2px;
+        scroll-behavior: smooth;
+        /* scrollbar-color: #cacaca #e5e7eb; */
+    }
+
+    .status_box_inner {
+        width: 5rem;
+        padding-bottom: 0.1rem;
+    }
+
+
+    .status_box::-webkit-scrollbar {
+        width: 2px;
+        height: 2px;
+    }
+
+    /* Customizing the scrollbar track */
+    .status_box::-webkit-scrollbar-track {
+        background-color: #dbdbdb;
+        border-radius: 8px;
+    }
+
+    /* Customizing the scrollbar thumb */
+    .status_box::-webkit-scrollbar-thumb {
+        background-color: #0037c4;
+        border-radius: 18px;
+        height: 2px;
+        width: 2px;
+    }
+
+    /* Hover effect for the scrollbar thumb */
+    .status_box::-webkit-scrollbar-thumb:hover {
+        background-color: #ab5050;
+        /* Slightly darker gray when hovered */
+    }
+
+
+
+}
+
+@media (max-width: 300px) {}

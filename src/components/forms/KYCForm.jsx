@@ -21,10 +21,10 @@ const KYCForm = ({ formData, setFormData, errors }) => {
                 {idTypes.map(type => (
                     <div
                         key={type.id}
-                        onClick={() => setFormData({...formData, idType: type.id})}
+                        onClick={() => setFormData({ ...formData, idType: type.id })}
                         className={`p-4 rounded-lg border-2 cursor-pointer transition-all
-                            ${formData.idType === type.id 
-                                ? 'border-blue-500 bg-blue-50' 
+                            ${formData.idType === type.id
+                                ? 'border-blue-500 bg-blue-50'
                                 : 'border-gray-200 hover:border-blue-200'}`}
                     >
                         <div className="flex items-center space-x-3">
@@ -43,62 +43,64 @@ const KYCForm = ({ formData, setFormData, errors }) => {
                     <input
                         type="text"
                         value={formData.idNumber}
-                        onChange={(e) => setFormData({...formData, idNumber: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
                         className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
                     />
                     {errors.idNumber && <p className="text-red-500 text-sm mt-1">{errors.idNumber}</p>}
                 </div>
 
-                <div>
-                    <label className="block text-gray-700 font-medium mb-2">Upload ID Document</label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                        <input
-                            type="file"
-                            accept=".pdf,.jpg,.jpeg,.png"
-                            onChange={(e) => handleFileUpload('idDocument', e.target.files[0])}
-                            className="hidden"
-                            id="id-upload"
-                        />
-                        <label
-                            htmlFor="id-upload"
-                            className="flex flex-col items-center cursor-pointer"
-                        >
-                            <FaFileUpload className="text-3xl text-gray-400 mb-2" />
-                            <span className="text-gray-600">Upload ID Document</span>
-                            <span className="text-sm text-gray-400 mt-1">PDF, JPG up to 5MB</span>
-                        </label>
+                <div className="flex space-x-4 items-center justify-between">
+                    <div>
+                        <label className="block text-gray-700 font-medium mb-2">Upload ID Document</label>
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                            <input
+                                type="file"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                onChange={(e) => handleFileUpload('idDocument', e.target.files[0])}
+                                className="hidden"
+                                id="id-upload"
+                            />
+                            <label
+                                htmlFor="id-upload"
+                                className="flex flex-col items-center cursor-pointer"
+                            >
+                                <FaFileUpload className="text-3xl text-gray-400 mb-2" />
+                                <span className="text-gray-600">Upload ID Document</span>
+                                <span className="text-sm text-gray-400 mt-1">PDF, JPG up to 5MB</span>
+                            </label>
+                        </div>
+                        {formData.idDocument && (
+                            <p className="text-sm text-green-500 mt-2">
+                                ✓ {formData.idDocument.name} uploaded
+                            </p>
+                        )}
                     </div>
-                    {formData.idDocument && (
-                        <p className="text-sm text-green-500 mt-2">
-                            ✓ {formData.idDocument.name} uploaded
-                        </p>
-                    )}
-                </div>
 
-                <div>
-                    <label className="block text-gray-700 font-medium mb-2">Proof of Address</label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-                        <input
-                            type="file"
-                            accept=".pdf,.jpg,.jpeg,.png"
-                            onChange={(e) => handleFileUpload('proofOfAddress', e.target.files[0])}
-                            className="hidden"
-                            id="address-upload"
-                        />
-                        <label
-                            htmlFor="address-upload"
-                            className="flex flex-col items-center cursor-pointer"
-                        >
-                            <FaFileUpload className="text-3xl text-gray-400 mb-2" />
-                            <span className="text-gray-600">Upload Proof of Address</span>
-                            <span className="text-sm text-gray-400 mt-1">Recent utility bill or bank statement</span>
-                        </label>
+                    <div>
+                        <label className="block text-gray-700 font-medium mb-2">Proof of Address</label>
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                            <input
+                                type="file"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                onChange={(e) => handleFileUpload('proofOfAddress', e.target.files[0])}
+                                className="hidden"
+                                id="address-upload"
+                            />
+                            <label
+                                htmlFor="address-upload"
+                                className="flex flex-col items-center cursor-pointer"
+                            >
+                                <FaFileUpload className="text-3xl text-gray-400 mb-2" />
+                                <span className="text-gray-600">Upload Proof of Address</span>
+                                <span className="text-sm text-gray-400 mt-1">Recent utility bill or bank statement</span>
+                            </label>
+                        </div>
+                        {formData.proofOfAddress && (
+                            <p className="text-sm text-green-500 mt-2">
+                                ✓ {formData.proofOfAddress.name} uploaded
+                            </p>
+                        )}
                     </div>
-                    {formData.proofOfAddress && (
-                        <p className="text-sm text-green-500 mt-2">
-                            ✓ {formData.proofOfAddress.name} uploaded
-                        </p>
-                    )}
                 </div>
             </div>
         </div>

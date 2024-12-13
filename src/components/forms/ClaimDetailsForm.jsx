@@ -19,7 +19,7 @@ const ClaimDetailsForm = ({ formData, setFormData, errors }) => {
 
     return (
         <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-row md:flex-row">
                 <div>
                     <label className="block text-gray-700 font-medium mb-2">Contract Value</label>
                     <div className="relative">

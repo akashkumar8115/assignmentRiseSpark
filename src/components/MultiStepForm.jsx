@@ -195,7 +195,7 @@ const MultiStepForm = () => {
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <Notification
                 message={notification.message}
                 type={notification.type}
@@ -205,7 +205,9 @@ const MultiStepForm = () => {
             <div className="mb-8">
                 <Stepper currentStep={currentStep} completedSteps={completedSteps} timeSpent={timeSpent} />
             </div>
-            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
+            
+            <div className="bg-white rounded-xl shadow-lg p-4 px-2 sm:p-6 lg:p-8">
+                {/* <div>write here docs name <hr /></div> */}
                 <div className="max-w-3xl mx-auto">
                     {renderForm()}
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
@@ -222,8 +224,8 @@ const MultiStepForm = () => {
                         <button
                             onClick={handleNext}
                             className="w-full sm:w-auto px-6 py-3 bg-blue-500 text-white rounded-lg
-                                     hover:bg-blue-600 transition-colors duration-200
-                                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                    hover:bg-blue-600 transition-colors duration-200
+                                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         >
                             {currentStep === 7 ? "Submit" : "Next"}
                         </button>
