@@ -2,6 +2,16 @@ import React from "react";
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 
 const PersonalDetailsForm = ({ formData, setFormData, errors }) => {
+    const handleChange = (e) => {
+        const value = e.target.value.replace(/\D/g, ''); // Removes any non-digit characters
+        if (value.length <= 10) { // Ensure it doesn't exceed 10 digits
+            setFormData((prevData) => ({
+                ...prevData,
+                phone: value
+            }));
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -12,7 +22,7 @@ const PersonalDetailsForm = ({ formData, setFormData, errors }) => {
                         <input
                             type="text"
                             value={formData.firstName}
-                            onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                             className="w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
                             placeholder="Enter first name"
                         />
@@ -27,10 +37,11 @@ const PersonalDetailsForm = ({ formData, setFormData, errors }) => {
                         <input
                             type="text"
                             value={formData.lastName}
-                            onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                             className="w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
                             placeholder="Enter last name"
                         />
+
                     </div>
                     {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
                 </div>
@@ -43,9 +54,10 @@ const PersonalDetailsForm = ({ formData, setFormData, errors }) => {
                     <input
                         type="email"
                         value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
                         placeholder="Enter email address"
+                        required
                     />
                 </div>
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -55,12 +67,28 @@ const PersonalDetailsForm = ({ formData, setFormData, errors }) => {
                 <label className="block text-gray-700 font-medium mb-2">Phone</label>
                 <div className="relative">
                     <FaPhone className="absolute left-3 top-3.5 text-gray-400" />
+                    {/* <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => {
+                            setFormData({ ...formData, phone: e.target.value });
+                            handleChange(e)
+                        }}
+                        className="w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter phone number"
+                        id="phone"
+                        required
+                    /> */}
                     <input
                         type="tel"
                         value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        onChange={(e) => {
+                            handleChange(e);
+                        }}
                         className="w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
                         placeholder="Enter phone number"
+                        id="phone"
+                        required
                     />
                 </div>
                 {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
@@ -72,7 +100,7 @@ const PersonalDetailsForm = ({ formData, setFormData, errors }) => {
                     <FaMapMarkerAlt className="absolute left-3 top-3.5 text-gray-400" />
                     <textarea
                         value={formData.address}
-                        onChange={(e) => setFormData({...formData, address: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                         className="w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
                         rows="3"
                         placeholder="Enter your address"

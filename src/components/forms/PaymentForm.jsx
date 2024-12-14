@@ -18,7 +18,7 @@ const PaymentForm = ({ formData, setFormData, errors }) => {
                 {paymentMethods.map((method) => (
                     <div
                         key={method.id}
-                        onClick={() => setFormData({...formData, paymentMethod: method.id})}
+                        onClick={() => setFormData({ ...formData, paymentMethod: method.id })}
                         className={`border rounded-lg p-6 cursor-pointer transition-all duration-200 
                             ${formData.paymentMethod === method.id ? 'border-blue-500 bg-blue-50' : 'hover:border-gray-400'}`}
                     >
@@ -42,7 +42,13 @@ const PaymentForm = ({ formData, setFormData, errors }) => {
                             <input
                                 type="text"
                                 value={formData.cardNumber}
-                                onChange={(e) => setFormData({...formData, cardNumber: e.target.value})}
+                                onChange={(e) => {
+                                    const value = e.target.value.replace(/\D/g, ''); // Only digits allowed
+                                    let formattedValue = value.replace(/(\d{4})(?=\d)/g, '$1 '); // Format to 4 digits separated by space
+                                    if (formattedValue.length <= 19) { // Max length is 19 (16 digits + 3 spaces)
+                                        setFormData({ ...formData, cardNumber: formattedValue });
+                                    }
+                                }}
                                 className="w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
                                 placeholder="1234 5678 9012 3456"
                             />
@@ -58,10 +64,31 @@ const PaymentForm = ({ formData, setFormData, errors }) => {
                                 <input
                                     type="text"
                                     value={formData.expiryDate}
-                                    onChange={(e) => setFormData({...formData, expiryDate: e.target.value})}
+                                    onChange={(e) => {
+                                        let value = e.target.value.replace(/[^\d]/g, ''); // Remove any non-digit characters
+
+                                        // Insert slash after two digits (MM/YY)
+                                        if (value.length > 2 && value.length <= 4) {
+                                            value = value.slice(0, 2) + '/' + value.slice(2);
+                                        }
+
+                                        // Check if the value is valid month (01-12)
+                                        if (value.length === 5) {
+                                            const month = parseInt(value.slice(0, 2), 10); // Get month part
+                                            if (month > 12 || month < 1) {
+                                                value = ''; // Reset if month is invalid
+                                            }
+                                        }
+
+                                        // Check if the value length is still <= 5 (for MM/YY format)
+                                        if (value.length <= 5) {
+                                            setFormData({ ...formData, expiryDate: value });
+                                        }
+                                    }}
                                     className="w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
                                     placeholder="MM/YY"
                                 />
+
                             </div>
                             {errors.expiryDate && <p className="text-red-500 text-sm mt-1">{errors.expiryDate}</p>}
                         </div>
@@ -70,13 +97,26 @@ const PaymentForm = ({ formData, setFormData, errors }) => {
                             <label className="block text-gray-700 font-medium mb-2">CVV</label>
                             <div className="relative">
                                 <FaLock className="absolute left-3 top-3.5 text-gray-400" />
-                                <input
+                                {/* <input
                                     type="text"
                                     value={formData.cvv}
-                                    onChange={(e) => setFormData({...formData, cvv: e.target.value})}
+                                    onChange={(e) => setFormData({ ...formData, cvv: e.target.value })}
                                     className="w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
                                     placeholder="123"
                                     maxLength="3"
+                                /> */}
+                                <input
+                                    type="text"
+                                    value={formData.cvv}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/\D/g, ''); // Only digits allowed
+                                        if (value.length <= 4) {
+                                            setFormData({ ...formData, cvv: value });
+                                        }
+                                    }}
+                                    className="w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                                    placeholder="123"
+                                    maxLength="4"
                                 />
                             </div>
                             {errors.cvv && <p className="text-red-500 text-sm mt-1">{errors.cvv}</p>}

@@ -94,11 +94,21 @@ const MultiStepForm = () => {
                 if (!formData.lastName) stepErrors.lastName = "Last name is required";
                 if (!formData.email) stepErrors.email = "Email is required";
                 else if (!/\S+@\S+\.\S+/.test(formData.email)) stepErrors.email = "Invalid email format";
-                if (!formData.phone) stepErrors.phone = "Phone number is required";
+
+                if (!formData.phone) {
+                    stepErrors.phone = "Phone number is required";
+                } else if (!/^\d{10}$/.test(formData.phone)) {
+                    stepErrors.phone = "Phone number must be exactly 10 digits";
+                }
                 break;
             case 3:
                 if (!formData.idType) stepErrors.idType = "ID type is required";
-                if (!formData.idNumber) stepErrors.idNumber = "ID number is required";
+                // Updated ID number validation
+                if (!formData.idNumber) {
+                    stepErrors.idNumber = "ID number is required";
+                } else if (!/^\d{12}$/.test(formData.idNumber)) {
+                    stepErrors.idNumber = "ID number must be exactly 12 digits";
+                }
                 break;
             case 4:
                 if (!formData.claimantCompany) stepErrors.claimantCompany = "Claimant company is required";
@@ -113,9 +123,15 @@ const MultiStepForm = () => {
                 if (!formData.paymentMethod) stepErrors.paymentMethod = "Payment method is required";
                 if (formData.paymentMethod === 'credit') {
                     if (!formData.cardNumber) stepErrors.cardNumber = "Card number is required";
+                    else if (!/^\d{4} \d{4} \d{4} \d{4}$/.test(formData.cardNumber)) stepErrors.cardNumber = "Card number must be in the format 1234 5678 9012 3456";
+
                     if (!formData.expiryDate) stepErrors.expiryDate = "Expiry date is required";
+                    else if (!/^\d{2}\/\d{2}$/.test(formData.expiryDate)) stepErrors.expiryDate = "Expiry date must be in the format MM/YY";
+
                     if (!formData.cvv) stepErrors.cvv = "CVV is required";
+                    else if (!/^\d{3,4}$/.test(formData.cvv)) stepErrors.cvv = "CVV must be 3/4 digits";
                 }
+                // if (!formData.billingAddress) stepErrors.billingAddress = "Billing address is required";
                 break;
             default:
                 break;
@@ -142,17 +158,28 @@ const MultiStepForm = () => {
     };
 
     const handlePrevious = () => {
-        setCurrentStep(prev => prev - 1);
-        setErrors({});
+        // Check if there are completed steps to go back
+        if (currentStep > 1) {
+            // Perform operations in reverse order for going back
+            const updatedCompletedSteps = completedSteps.filter(step => step !== currentStep - 1);
+            setCompletedSteps(updatedCompletedSteps); // Remove the previous step from completed steps
+            setCurrentStep(prev => prev - 1); // Go back to the previous step
+            setErrors({}); // Clear any errors
+            showNotification("Moved to the previous step!", "info");
+        } else {
+            showNotification("You are already at the first step.", "warning");
+        }
     };
 
-    const handleSubmit = async() => {
+
+
+    const handleSubmit = async () => {
         console.log("Form submitted:", formData);
         showNotification("Form submitted successfully!", "success");
         try {
             // Process payment and form submission
             showNotification("Payment successful!", "success");
-            
+
             // Generate and download slip
             const slip = await generatePDF(formData);
             const downloadUrl = URL.createObjectURL(slip);
@@ -160,10 +187,10 @@ const MultiStepForm = () => {
             link.href = downloadUrl;
             link.download = `claim-receipt-${Date.now()}.pdf`;
             link.click();
-            
+
             // Clean up
             URL.revokeObjectURL(downloadUrl);
-            
+
             // Reset form or redirect
             setFormData({});
             setCurrentStep(1);
@@ -205,9 +232,10 @@ const MultiStepForm = () => {
             <div className="mb-8">
                 <Stepper currentStep={currentStep} completedSteps={completedSteps} timeSpent={timeSpent} />
             </div>
-            
+
+            <div>write here docs name <hr /></div>
+
             <div className="bg-white rounded-xl shadow-lg p-4 px-2 sm:p-6 lg:p-8">
-                {/* <div>write here docs name <hr /></div> */}
                 <div className="max-w-3xl mx-auto">
                     {renderForm()}
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">

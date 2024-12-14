@@ -1,3 +1,11 @@
+
+
+.status_dashed{
+    /* border: 2px dashed blue; */
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+}
 @media (max-width: 768px) {
     /* Styles for screens that are 768px or smaller */
 }
@@ -71,7 +79,7 @@
     /* Hover effect for the scrollbar thumb */
     .status_box::-webkit-scrollbar-thumb:hover {
         background-color: #ab5050;
-        /* Slightly darker gray when hovered */
+        
     }
 
 

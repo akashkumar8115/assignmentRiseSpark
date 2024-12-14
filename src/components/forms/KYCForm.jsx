@@ -15,6 +15,17 @@ const KYCForm = ({ formData, setFormData, errors }) => {
         });
     };
 
+
+    const handleIDChange = (e) => {
+        const value = e.target.value.replace(/\D/g, ''); // Removes any non-digit characters
+        if (value.length <= 12) { // Ensure it doesn't exceed 12 digits
+            setFormData((prevData) => ({
+                ...prevData,
+                idNumber: value
+            }));
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -40,11 +51,22 @@ const KYCForm = ({ formData, setFormData, errors }) => {
             <div className="space-y-4">
                 <div>
                     <label className="block text-gray-700 font-medium mb-2">ID Number</label>
-                    <input
+                    {/* <input
                         type="text"
                         value={formData.idNumber}
                         onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
                         className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+                        id="idnumber"
+                    /> */}
+
+                    <input
+                        type="text"
+                        value={formData.idNumber}
+                        onChange={handleIDChange} // Handle ID number change
+                        className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500"
+                        id="idnumber"
+                        placeholder="Enter ID number"
+                        required
                     />
                     {errors.idNumber && <p className="text-red-500 text-sm mt-1">{errors.idNumber}</p>}
                 </div>

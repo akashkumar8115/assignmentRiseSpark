@@ -98,7 +98,7 @@ const Stepper = ({ currentStep, completedSteps = [], timeSpent }) => {
                                     ${getStepStatus(step.id) === "completed"
                                         ? "bg-blue-500 border-blue-500 pr-2"
                                         : getStepStatus(step.id) === "current"
-                                            ? "border-[2px] border-dashed border-blue-500"
+                                            ? "border-[3px] border-dashed border-blue-500 status_dashed"
                                             : "border-[1px] border-blue-200 pr-2 bg-blue-200"}`}
                                 />
                             </div>
