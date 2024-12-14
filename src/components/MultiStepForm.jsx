@@ -233,7 +233,7 @@ const MultiStepForm = () => {
                 <Stepper currentStep={currentStep} completedSteps={completedSteps} timeSpent={timeSpent} />
             </div>
 
-            <div>write here docs name <hr /></div>
+            {/* <div>write here docs name <hr /></div> */}
 
             <div className="bg-white rounded-xl shadow-lg p-4 px-2 sm:p-6 lg:p-8">
                 <div className="max-w-3xl mx-auto">
